@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "HomeInventory", "HomeInventory\HomeInventory.fsproj", "{DADC7B73-DBD0-4A5B-A276-8D5E143C2541}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Frontend", "Frontend\Frontend.fsproj", "{8DC00CDE-0D99-41F6-A5B5-A901F3D1C88C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{DADC7B73-DBD0-4A5B-A276-8D5E143C2541}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DADC7B73-DBD0-4A5B-A276-8D5E143C2541}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DADC7B73-DBD0-4A5B-A276-8D5E143C2541}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DC00CDE-0D99-41F6-A5B5-A901F3D1C88C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DC00CDE-0D99-41F6-A5B5-A901F3D1C88C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DC00CDE-0D99-41F6-A5B5-A901F3D1C88C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DC00CDE-0D99-41F6-A5B5-A901F3D1C88C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

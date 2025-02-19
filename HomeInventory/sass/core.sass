@@ -1,2 +1,175 @@
-body
-    color: red
+*
+    margin: 0
+    padding: 0
+    box-sizing: border-box
+    scroll-behavior: smooth
+    font-family: manrope, sans-serif
+    overscroll-behavior: none
+a
+    cursor: pointer
+
+:root
+    --primary-color: #3c88af
+    --secondary-color: white
+    --tertiary-color: lightblue
+
+@mixin mobile
+    @media screen and (max-width: 900px)
+        @content
+
+@mixin flex
+    display: flex
+    justify-content: center
+    align-items: center
+
+@mixin flex-column
+    @include flex
+    flex-direction: column
+
+.button
+    padding: 1em
+    transition: all .2s ease-in-out
+
+.button:hover
+    transform: scale(1.2)
+    cursor: pointer
+
+.button-primary,
+.button-secondary:hover
+    background: var(--primary-color)
+    color: var(--secondary-color)
+    border: solid 2px var(--secondary-color)
+
+.button-primary:hover,
+.button-secondary
+    background: var(--secondary-color)
+    color: var(--primary-color)
+    border: solid 2px var(--primary-color)
+
+
+dialog
+    position: fixed
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    border: none
+    border-radius: 10px
+    background: var(--primary-color)
+    color: var(--secondary-color)
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3)
+    width: 15dvw
+    height: 40dvh
+
+    &::backdrop
+        background: rgba(0, 0, 0, 0.5)
+
+    form
+        @include flex-column
+        justify-content: flex-start
+        width: 100%
+        height: 100%
+        padding: 1em
+
+        > *
+            width: 100%
+
+        > button
+            width: 50%
+
+        h3
+            @include flex
+            flex-basis: 10%
+
+        .formControl
+            @include flex-column
+            align-items: flex-start
+            flex-basis: 20%
+
+            > *
+                @include flex
+                justify-content: flex-start
+                width: 100%
+                flex-basis: 50%
+
+            > label
+                align-items: flex-end
+
+
+main
+    height: 100dvh
+    width: 100dvw
+
+    > section
+        height: 70dvh
+        @include flex-column
+        justify-content: flex-start
+
+        nav
+            @include flex
+            align-items: flex-start
+            flex-basis: 10%
+            width: 100%
+
+            form
+                @include flex
+                align-items: flex-start
+                flex-basis: 100%
+                width: 100%
+                height: 100%
+
+                input
+                    flex-basis: 100%
+                    height: 100%
+                    font-size: 2em
+                    padding-left: 1em
+                    color: var(--primary-color)
+
+        .resultSet
+            @include flex
+            flex-basis: 90%
+            width: 100%
+            overflow-y: auto
+
+        .searchResults
+            display: grid
+            height: 100%
+            width: 100%
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr))
+            grid-auto-rows: 30%
+
+            .itemCard:nth-child(odd)
+                background-color: var(--tertiary-color)
+
+            .itemCard
+                @include flex
+
+                .image
+                    @include flex-column
+                    flex-basis: 25%
+                    height: 100%
+
+                .details
+                    @include flex-column
+                    flex-basis: 75%
+                    height: 100%
+                    gap: 1em
+                    align-items: flex-start
+
+                    h3
+                        color: var(--primary-color)
+
+
+
+
+    > header
+        height: 15dvh
+
+    > footer
+        @include flex
+        height: 15dvh
+        gap: 1em
+
+    > header, footer
+        @include flex
+        background: var(--primary-color)
+        color: var(--secondary-color)

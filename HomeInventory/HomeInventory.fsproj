@@ -7,17 +7,27 @@
 
     <ItemGroup>
         <Compile Include="Types.fs" />
+        <Compile Include="DataTypes.fs" />
+        <Compile Include="Model.fs" />
         <Compile Include="View.fs" />
         <Compile Include="Controller.fs" />
-        <Compile Include="Model.fs" />
         <Compile Include="Program.fs"/>
-        <Folder Include="wwwroot\scripts\" />
-        <Folder Include="wwwroot\styles\" />
         <Content Include="sass\core.sass" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Dapper.FSharp" Version="4.9.0" />
+      <PackageReference Include="Npgsql" Version="9.0.2" />
+      <PackageReference Include="Npgsql.FSharp" Version="8.0.0" />
       <PackageReference Include="Saturn" Version="0.17.0" />
+    <Content Include="wwwroot\styles\core.css" CopyToOutputDirectory="Always" />
+    <PackageReference Update="FSharp.Core" Version="9.0.201" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="wwwroot\**\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

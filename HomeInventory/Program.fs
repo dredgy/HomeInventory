@@ -9,9 +9,12 @@ open System.Net.Sockets
 
 module Program =
 
+    Dapper.FSharp.PostgreSQL.OptionTypes.register()
+
     let router = router {
         not_found_handler (setStatusCode 404 >=> text "404")
-        get "/" ( View.Index |> htmlView)
+        get "/" (htmlView View.Index)
+        getf "/search/%s" (fun string -> htmlView (Controller.Search string))
     }
 
     let ServiceConfig (services: IServiceCollection) =
@@ -25,7 +28,6 @@ module Program =
         let greenCode = "\u001b[32m"
         let resetCode = "\u001b[0m"
 
-        // Print the server IP address
         printfn $"{boldCode}Now Running On: {greenCode}%s{serverIpAddress}{resetCode}"
         services.AddHttpContextAccessor()
 
