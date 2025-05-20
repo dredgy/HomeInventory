@@ -12,6 +12,7 @@
         <Compile Include="View.fs" />
         <Compile Include="Controller.fs" />
         <Compile Include="Program.fs"/>
+        <Content Include="package.json" />
         <Content Include="sass\core.sass" />
     </ItemGroup>
     <ItemGroup>
