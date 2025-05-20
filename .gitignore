@@ -8,3 +8,4 @@ riderModule.iml
 HomeInventory/wwwroot/scripts
 HomeInventory/wwwroot/styles
 appsettings.json
+deploy.sh
