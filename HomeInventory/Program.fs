@@ -1,17 +1,16 @@
 ﻿open HomeInventory
 open HomeInventory.Controller
 open HomeInventory.Types
-open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Saturn
 open Giraffe
-open Types
+open Microsoft.Extensions.Configuration
+open System.IO
 
 open System.Net
 open System.Net.Sockets
 open System.Text.Json
 open System.Text.Json.Serialization
-open FSharp.SystemTextJson // Import the correct package
 
 module Program =
 
@@ -21,6 +20,16 @@ module Program =
         options.PropertyNamingPolicy <- JsonNamingPolicy.CamelCase // Use camelCase JSON keys
         options
     Dapper.FSharp.PostgreSQL.OptionTypes.register()
+
+    let config =
+        ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional = false, reloadOnChange = true)
+            .Build()
+
+    let connectionString = config.GetConnectionString("HomeInventory")
+    Model.ConnectionString <- connectionString
+
 
     let router = router {
         not_found_handler (setStatusCode 404 >=> text "404")

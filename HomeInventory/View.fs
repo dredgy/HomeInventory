@@ -115,7 +115,7 @@ let ItemCard (item: Item) (breadcrumbs: string[]) =
     let showInUseButton =
         match item.parent_id with
             | None -> true
-            | Some parent_id -> parent_id <> InUseContainer.id
+            | Some parent_id -> parent_id <> InUseContainer().id
     let bcListWithPointer =
         match item.parent_id with
             | Some _ -> bcList + " » "

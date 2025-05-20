@@ -8,7 +8,7 @@ open System.Linq
 open Npgsql.FSharp
 
 
-let ConnectionString = $"Server=192.168.1.17;Port={5432};User Id=postgres;Password=root;Database=home_inventory;Include Error Detail=true"
+let mutable ConnectionString = $""
 let connectToDatabase () = (new Npgsql.NpgsqlConnection(ConnectionString))
 let EnumerableToArray (enumerable: IEnumerable<'x>) =  enumerable.ToArray()
 
@@ -101,7 +101,7 @@ let UpdateItem (updatedItem: Item) =
     connection.Close()
 
 
-let InUseContainer =
+let InUseContainer () =
     let connection = connectToDatabase()
     let result =
         select {

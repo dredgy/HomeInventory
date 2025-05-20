@@ -6,3 +6,4 @@ riderModule.iml
 .idea
 HomeInventory/wwwroot/scripts
 HomeInventory/wwwroot/styles
+appsettings.json

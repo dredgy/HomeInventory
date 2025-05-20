@@ -22,9 +22,10 @@ let UpdateItem (item: Item) =
     View.containerSelectBox true
 
 let CheckoutItem id =
-    if id <> InUseContainer.id then
+    let inUse = InUseContainer()
+    if id <> inUse.id then
         let item = GetItemById id
-        let updatedItem = {item with parent_id = Some InUseContainer.id}
+        let updatedItem = {item with parent_id = Some inUse.id}
         Model.UpdateItem updatedItem |> ignore
     "Updated Successfully"
 
