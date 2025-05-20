@@ -1,5 +1,6 @@
 ﻿module HomeInventory.View
 
+open HomeInventory.Model
 open HomeInventory.Types
 open Types
 open Giraffe.ViewEngine
@@ -29,8 +30,7 @@ let rec createOptions (nodes: ItemNode list) =
 
 let containerSelect (required: bool) (nodes: ItemNode list) =
     select [
-        _name "container"
-        _id "container-select"
+        _name "parent_id"
         _class "form-select"
         if required then _required
     ] [
@@ -38,8 +38,8 @@ let containerSelect (required: bool) (nodes: ItemNode list) =
         yield! createOptions nodes
     ]
 
-let containerSelectBox required =
-        Model.getAllContainerItems
+let containerSelectBox required=
+        Model.getAllContainerItems ()
         |> Model.buildTree
         |> containerSelect required
 
@@ -49,19 +49,22 @@ let formControl labelText inputNodes =
         yield! inputNodes
     ]
 
-let addItemDialog =
-    dialog [_id "addItemDialog"] [
-        form [_class "addItemForm"] [
-            h3 [] [str "Add Item"]
-
-            formControl "Item Name/Code" [input [_name "item_name" ;_required]]
-            formControl "Item Description" [input [_name "item_description"; _required]]
-            formControl "Item Tags" [textarea [_name "item_tags"; _required] []]
+let moveItemDialog () =
+    dialog [_id "moveItemDialog"] [
+        form [ _id "moveItemForm"] [
+            h3 [] [str "Move Item"]
+            input [_name "id" ;_required; _type "hidden"]
+            formControl "Item Name/Code" [input [_name "name" ;_required; _autocomplete "off"]]
+            formControl "Item Description" [input [_name "description"; _required; _autocomplete "off"]]
+            formControl "Item Tags" [textarea [_name "tags"; _required; _autocomplete "off"] []]
             formControl "Item Container" [containerSelectBox true]
-            button [_class "button button-secondary create-item"; _type "button"] [str "💾 Save"]
+            div [_class "modalButtons"] [
+                button [_class "button button-primary close-modal"; _type "button"] [str "❌ Close"]
+                button [_class "button button-primary create-item"] [str "💾 Save"]
+            ]
         ]
 
-    ]
+]
 
 let Layout (pageTitle : string Option) content=
     html [] [
@@ -83,24 +86,23 @@ let Layout (pageTitle : string Option) content=
                     yield! content
                 ]
                 footer [] [
-                    button [_class "button button-primary add-item"; _type "button"] [str "➕ Add Item"]
-                    button [_class "button button-primary move-item"; _type "button"] [str "📦 Move Item"]
+                    button [_class "button button-primary add-item"; _type "button"; (attr "data-action") "add"] [str "➕ Add Item"]
                 ]
-                addItemDialog
+
             ]
         ]
     ]
 
-let Index  =
+let Index ()  =
     Layout None [
         nav [] [
             form [] [
-                input [_type "text"; _placeholder "Search for an item"; _name "search"]
+                input [_type "text"; _placeholder "Search for an item"; _id "search"; _name "search"; _autocomplete "off"]
             ]
         ]
-        section [_class "resultSet"] [
+        section [_class "resultSet"] []
+        moveItemDialog ()
 
-        ]
     ]
 
 let itemCardList itemCards =
@@ -109,14 +111,40 @@ let itemCardList itemCards =
     ]
 
 let ItemCard (item: Item) (breadcrumbs: string[]) =
-    let bcList = String.Join(" » ", breadcrumbs)
+    let bcList = String.Join(" » ",( Array.take (breadcrumbs.Length - 1) breadcrumbs))
+    let showInUseButton =
+        match item.parent_id with
+            | None -> true
+            | Some parent_id -> parent_id <> InUseContainer.id
+    let bcListWithPointer =
+        match item.parent_id with
+            | Some _ -> bcList + " » "
+            | None -> ""
     div [_class "itemCard"] [
         section [_class "image"] [
 
         ]
         section [_class "details"] [
+            small [] [str bcListWithPointer]
             h3 [] [str item.name]
             p [] [str item.description]
-            p [] [str bcList]
+            div [_class "actionButtons"] [
+            button [
+                _class "button button-primary move-item"
+                _type "button"
+                (attr "data-item-id" (string item.id))
+                (attr "data-item-name" (string item.name))
+                (attr "data-parent-id" (if item.parent_id.IsSome then string item.parent_id.Value else ""))
+                (attr "data-tags" item.tags)
+                (attr "data-description" item.description)
+                (attr "data-action") "edit"
+            ] [str "📦 Move Item"]
+            if (not (item.tags.Contains("container"))) && showInUseButton then
+                button [
+                    _class "button button-primary use-item"
+                    _type "button"
+                    (attr "data-item-id" (string item.id))
+                ] [str "🔒 Mark as In Use"]
+            ]
         ]
     ]

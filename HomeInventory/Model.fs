@@ -8,10 +8,12 @@ open System.Linq
 open Npgsql.FSharp
 
 
-let ConnectionString = $"Server=localhost;Port={5432};User Id=postgres;Password=root;Database=home_inventory;Include Error Detail=true"
+let ConnectionString = $"Server=192.168.1.17;Port={5432};User Id=postgres;Password=root;Database=home_inventory;Include Error Detail=true"
 let connectToDatabase () = (new Npgsql.NpgsqlConnection(ConnectionString))
 let EnumerableToArray (enumerable: IEnumerable<'x>) =  enumerable.ToArray()
-let getAllContainerItems  =
+
+(*language=postgresql*)
+let getAllContainerItems ()  =
     ConnectionString
     |> Sql.connect
     |> Sql.query """
@@ -42,7 +44,6 @@ let getAllContainerItems  =
         })
 
 let rec buildTree (items: Item list) =
-    let itemsById = items |> List.map (fun i -> i.id, i) |> Map.ofList
 
     let rec buildNode (item: Item) =
         let children =
@@ -72,23 +73,98 @@ let getItemById (id: int) =
     connection.Close()
     results
 
+let CreateItem (newItem: Item) =
+    let connection = connectToDatabase()
+    insert {
+        for item in ItemTable do
+        value newItem
+        excludeColumn item.id
+    }
+    |> connection.InsertAsync
+    |> Async.AwaitTask
+    |> Async.RunSynchronously
+    |> ignore
+    connection.Close()
+
+
+let UpdateItem (updatedItem: Item) =
+    let connection = connectToDatabase()
+    update {
+        for item in ItemTable do
+        set updatedItem
+        where (item.id = updatedItem.id)
+    }
+    |> connection.UpdateAsync
+    |> Async.AwaitTask
+    |> Async.RunSynchronously
+    |> ignore
+    connection.Close()
+
+
+let InUseContainer =
+    let connection = connectToDatabase()
+    let result =
+        select {
+            for item in ItemTable do
+            where (item.name = "In Use")
+        }
+        |> connection.SelectAsync<Item>
+        |> Async.AwaitTask
+        |> Async.RunSynchronously
+        |> EnumerableToArray
+        |> Array.head
+    connection.Close()
+    result
+
+let GetItemById id =
+    let connection = connectToDatabase()
+    let result =
+        select {
+            for item in ItemTable do
+            where (item.id = id)
+        }
+        |> connection.SelectAsync<Item>
+        |> Async.AwaitTask
+        |> Async.RunSynchronously
+        |> EnumerableToArray
+        |> Array.head
+    connection.Close()
+    result
+
+
 let Search searchString =
     let connection = connectToDatabase()
 
     let pattern = sprintf "%%%s%%" searchString
 
     let results =
-        select {
-            for item in ItemTable do
-            where (ilike item.name pattern)
-            orWhere (ilike item.description pattern)
-            orWhere (ilike item.tags pattern)
-        }
-        |> connection.SelectAsync<Item>
-        |> Async.AwaitTask
-        |> Async.RunSynchronously
-        |> EnumerableToArray
+        ConnectionString
+        |> Sql.connect
+        |> Sql.query """
+            SELECT *
+            FROM items
+            WHERE (
+                name ILIKE @pattern
+                OR description ILIKE @pattern
+                OR tags ILIKE @pattern
+            )
+            AND NOT (tags ILIKE '%hidden%')
+            AND NOT (
+                tags ILIKE '%container%'
+                AND tags NOT ILIKE '%searchable%'
+            )
+            ORDER BY name;
+            """
+        |> Sql.parameters [ "pattern", Sql.string pattern ]
+        |> Sql.execute (fun read ->
+            {
+                id = read.int "id"
+                parent_id = read.intOrNone "parent_id"
+                name = read.string "name"
+                description = read.string "description"
+                tags = read.string "tags"
+            })
+        |>Array.ofList
 
-    connection.Close()
     results
 

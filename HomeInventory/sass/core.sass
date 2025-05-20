@@ -94,6 +94,15 @@ dialog
             > label
                 align-items: flex-end
 
+        .modalButtons
+            padding-top: 0.5em
+            @include flex
+            width: 80%
+            gap: 0.5em
+            button
+                flex-basis: 50%
+                height: 100%
+
 
 main
     height: 100dvh
@@ -142,21 +151,48 @@ main
 
             .itemCard
                 @include flex
+                padding: 1em
+
 
                 .image
                     @include flex-column
                     flex-basis: 25%
                     height: 100%
+                    order: 2
 
                 .details
                     @include flex-column
                     flex-basis: 75%
                     height: 100%
-                    gap: 1em
                     align-items: flex-start
+                    gap: 0.5em
+                    order: 1
 
                     h3
                         color: var(--primary-color)
+                        flex-basis: 20%
+
+                    small
+                        flex-basis: 20%
+                        color: var(--primary-color)
+                        @include flex
+                        width: 100%
+                        justify-content: flex-start
+                        align-items: flex-end
+
+                    p, .actionButtons
+                        flex-basis: 30%
+                        width: 100%
+
+                    .actionButtons
+                        @include flex
+                        justify-content: flex-start
+                        gap: 1em
+
+                        button
+                            flex-basis: 50%
+
+
 
 
 

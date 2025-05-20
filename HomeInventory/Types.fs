@@ -1,5 +1,6 @@
 ﻿module HomeInventory.Types
 
+
 type ApplicationSettings = {
     name: string
 }
@@ -12,6 +13,7 @@ type Item = {
     description: string
     tags: string
 }
+
 
 type ItemNode = {
     item: Item

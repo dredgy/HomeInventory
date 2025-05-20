@@ -1,4 +1,7 @@
 ﻿open HomeInventory
+open HomeInventory.Controller
+open HomeInventory.Types
+open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Saturn
 open Giraffe
@@ -6,15 +9,28 @@ open Types
 
 open System.Net
 open System.Net.Sockets
+open System.Text.Json
+open System.Text.Json.Serialization
+open FSharp.SystemTextJson // Import the correct package
 
 module Program =
 
+    let jsonOptions =
+        let options = JsonSerializerOptions(JsonSerializerDefaults.Web)
+        options.Converters.Add(JsonFSharpConverter()) // Enable F# option type support
+        options.PropertyNamingPolicy <- JsonNamingPolicy.CamelCase // Use camelCase JSON keys
+        options
     Dapper.FSharp.PostgreSQL.OptionTypes.register()
 
     let router = router {
         not_found_handler (setStatusCode 404 >=> text "404")
-        get "/" (htmlView View.Index)
+        get "/" (warbler(fun _ -> htmlView (View.Index ())))
         getf "/search/%s" (fun string -> htmlView (Controller.Search string))
+        getf "/checkout/%i" (fun itemId -> text (CheckoutItem itemId))
+        post "/item/update" (bindJson<Item> (fun item ->
+            fun next ctx ->
+                htmlView (UpdateItem item) next ctx
+        ))
     }
 
     let ServiceConfig (services: IServiceCollection) =
@@ -37,6 +53,7 @@ module Program =
             use_mime_types [(".woff", "application/font-woff")]
             use_static "wwwroot"
             use_router router
+            use_json_serializer (SystemTextJson.Serializer jsonOptions)
             use_developer_exceptions
             service_config ServiceConfig
             url "http://0.0.0.0:5001"
