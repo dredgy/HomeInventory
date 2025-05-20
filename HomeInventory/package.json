@@ -9,7 +9,7 @@
         "url": "https://github.com/dredgy/HomeInventory.git"
     },
     "scripts": {
-        "fable": "fable ../Frontend/Frontend.fsproj --outDir wwwroot/scripts",
+        "fable": "cd ../Frontend && fable ../Frontend/Frontend.fsproj --outDir wwwroot/scripts",
         "sass": "sass sass:wwwroot/styles",
         "build": "npm run fable && npm run sass",
         "watch": "concurrently \"npm run fable:watch\" \"npm run sass:watch\"",
