@@ -3,12 +3,22 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
+    "private": true,
     "repository": {
         "type": "git",
         "url": "https://github.com/dredgy/HomeInventory.git"
     },
-    "private": true
+    "scripts": {
+        "fable": "fable Frontend.fsproj --outDir wwwroot/scripts",
+        "sass": "sass styles:../wwwroot/styles",
+        "build": "npm run fable && npm run sass",
+        "watch": "concurrently \"npm run fable:watch\" \"npm run sass:watch\"",
+        "fable:watch": "fable Frontend.fsproj --outDir wwwroot/scripts --watch",
+        "sass:watch": "sass --watch styles:../wwwroot/styles"
+    },
+    "devDependencies": {
+        "fable": "^4.0.0",
+        "sass": "^1.0.0",
+        "concurrently": "^8.0.0"
+    }
 }
