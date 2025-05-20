@@ -1,5 +1,6 @@
 bin/
 obj/
+HomeInventory/node_modules
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
