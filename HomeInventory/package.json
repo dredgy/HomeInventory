@@ -10,11 +10,11 @@
     },
     "scripts": {
         "fable": "fable ../Frontend/Frontend.fsproj --outDir wwwroot/scripts",
-        "sass": "sass styles:../wwwroot/styles",
+        "sass": "sass sass:wwwroot/styles",
         "build": "npm run fable && npm run sass",
         "watch": "concurrently \"npm run fable:watch\" \"npm run sass:watch\"",
         "fable:watch": "fable ../Frontend/Frontend.fsproj --outDir wwwroot/scripts --watch",
-        "sass:watch": "sass --watch styles:../wwwroot/styles"
+        "sass:watch": "sass --watch sass:wwwroot/styles"
     },
     "devDependencies": {
         "sass": "^1.0.0",
