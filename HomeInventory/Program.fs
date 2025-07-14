@@ -10,6 +10,7 @@ open System.IO
 open System.Net
 open System.Net.Sockets
 open System.Text.Json
+open System.Reflection
 open System.Text.Json.Serialization
 
 module Program =
@@ -21,9 +22,11 @@ module Program =
         options
     Dapper.FSharp.PostgreSQL.OptionTypes.register()
 
+    let exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+
     let config =
         ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath(exeDir)
             .AddJsonFile("appsettings.json", optional = false, reloadOnChange = true)
             .Build()
 
@@ -52,6 +55,7 @@ module Program =
         let boldCode = "\u001b[1m"
         let greenCode = "\u001b[32m"
         let resetCode = "\u001b[0m"
+
 
         printfn $"{boldCode}Now Running On: {greenCode}%s{serverIpAddress}{resetCode}"
         services.AddHttpContextAccessor()
