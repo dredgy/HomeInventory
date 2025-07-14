@@ -65,7 +65,7 @@ module Program =
     let app =
         application {
             use_mime_types [(".woff", "application/font-woff")]
-            use_static "wwwroot"
+            use_static (Path.Combine(AppContext.BaseDirectory, "wwwroot"))
             use_router router
             use_json_serializer (SystemTextJson.Serializer jsonOptions)
             use_developer_exceptions
