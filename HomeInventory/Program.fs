@@ -1,4 +1,5 @@
-﻿open HomeInventory
+﻿open System
+open HomeInventory
 open HomeInventory.Controller
 open HomeInventory.Types
 open Microsoft.Extensions.DependencyInjection
@@ -22,7 +23,7 @@ module Program =
         options
     Dapper.FSharp.PostgreSQL.OptionTypes.register()
 
-    let exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+    let exeDir = AppContext.BaseDirectory
 
     let config =
         ConfigurationBuilder()
